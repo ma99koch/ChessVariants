@@ -3,13 +3,27 @@ package ch.zhaw.chessvariants
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,30 +31,78 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ChessVariantsTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                GameScene()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun GameScene() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        Text(text = "White to Move",
+            textAlign = TextAlign.Center,
+            fontSize = 30.sp)
+        // Draw ChessBoard
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Spacer(Modifier.width(10.dp))
+            ChessBoard(Modifier.weight(1f))
+            Spacer(Modifier.width(10.dp))
+        }
+
+        // Draw Control-Tools
+        ControlButtons()
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    ChessVariantsTheme {
-        Greeting("Android")
+private fun ControlButtons(iconSize: Dp = 40.dp){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+
+        Spacer(Modifier.weight(1f))
+        Icon(
+            imageVector = Icons.Default.Home,
+            contentDescription = "Go to Home",
+            modifier = Modifier
+                .size(iconSize)
+                .clickable {
+
+                }
+        )
+        Spacer(Modifier.weight(1f))
+
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Go to Home",
+            modifier = Modifier
+                .size(iconSize)
+                .clickable {
+
+                }
+        )
+        Spacer(Modifier.weight(1f))
+
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = "Go to Home",
+            modifier = Modifier
+                .size(iconSize)
+                .clickable {
+
+                }
+        )
+        Spacer(Modifier.weight(1f))
     }
 }
