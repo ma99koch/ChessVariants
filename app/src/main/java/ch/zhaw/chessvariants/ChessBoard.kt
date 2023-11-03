@@ -9,16 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,17 +57,12 @@ private fun ChessField(
     Box(
         modifier
             .clickable {
-                if (!game.hasCandidate()) {
-                    if (!game.isOwnPiece(row, col)) {
-                        return@clickable
-                    }
-                    game.setCandidate(row, col)
-                } else {
-                    if (game.isCandidate(row, col)) {
-                        game.clearCandidate()
-                    } else if (allowedToMoveTo) {
-                        game.moveCandidateTo(row, col)
-                    }
+                if (game.isOwnPiece(row, col)) {
+                    game.toggleCandidate(row, col)
+                    return@clickable
+                }
+                if (game.hasCandidate() && allowedToMoveTo) {
+                    game.moveCandidateTo(row, col)
                 }
             }
             .background(fieldColor)
