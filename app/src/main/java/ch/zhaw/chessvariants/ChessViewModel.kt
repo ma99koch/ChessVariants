@@ -3,7 +3,6 @@ package ch.zhaw.chessvariants
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import kotlin.random.Random
 
 class ChessViewModel : ViewModel() {
     enum class Player {
@@ -14,7 +13,7 @@ class ChessViewModel : ViewModel() {
     val allowedToMoveTo = Array(8) { Array(8) { mutableStateOf(false) } }
     var currentPlayer = mutableStateOf(Player.WHITE)
 
-    val FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR sd d"
+    val FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 
     /**
@@ -60,12 +59,16 @@ class ChessViewModel : ViewModel() {
         return candidate.value.contentEquals(intArrayOf(row, col))
     }
 
-    fun setCandidate(row: Int, col: Int) {
-        this.candidate.value = intArrayOf(row, col)
-        setPossibleMoves(row, col)
+    fun toggleCandidate(row: Int, col: Int) {
+        if (candidate.value.contentEquals(intArrayOf(row, col))){
+            clearCandidate()
+        } else {
+            this.candidate.value = intArrayOf(row, col)
+            setPossibleMoves(row, col)
+        }
     }
 
-    fun clearCandidate() {
+    private fun clearCandidate() {
         this.candidate.value = intArrayOf(-1, -1)
         for (values in allowedToMoveTo) {
             for (value in values) {
@@ -108,6 +111,12 @@ class ChessViewModel : ViewModel() {
             for (i in allowedMoves.indices) {
                 for (j in allowedMoves.indices) {
                     allowedToMoveTo[i][j].value = allowedMoves[i][j]
+                }
+            }
+        } else {
+            for (i in chessBoard.indices) {
+                for (j in chessBoard.indices) {
+                    allowedToMoveTo[i][j].value = false
                 }
             }
         }
@@ -156,5 +165,4 @@ class ChessViewModel : ViewModel() {
         }
         return allowedMoves
     }
-
 }
