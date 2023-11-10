@@ -1,8 +1,8 @@
 package ch.zhaw.chessvariants
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import coordinates.Coordinate2D
 
 class ChessViewModel : ViewModel() {
     enum class Player {
@@ -23,30 +23,48 @@ class ChessViewModel : ViewModel() {
     private var candidate = mutableStateOf(intArrayOf(-1, -1))
 
     init {
+//        SampleChess().initGame()
         initializeBoard()
     }
 
     private fun initializeBoard() {
-        val sb = StringBuilder()
-        for (char in FEN) {
-            if(char == ' '){
-                break
-            }
-            if(char == '/'){
-                continue
-            }
-            if (char.isDigit()) {
-                for (i in 0 until char.digitToInt()) {
-                    sb.append(' ')
+        /*        val sb = StringBuilder()
+                for (char in FEN) {
+                    if(char == ' '){
+                        break
+                    }
+                    if(char == '/'){
+                        continue
+                    }
+                    if (char.isDigit()) {
+                        for (i in 0 until char.digitToInt()) {
+                            sb.append(' ')
+                        }
+                        continue
+                    }
+                    sb.append(char)
                 }
-                continue
-            }
-            sb.append(char)
-        }
         Log.d("ChessLog", "Following is the String: $sb")
         for (row in chessBoard.indices){
             for (col in chessBoard.indices){
                 chessBoard[row][col].value = sb[row * chessBoard.size + col]
+            }
+        }
+*/
+        val sampleChess = SampleChess()
+        sampleChess.initGame()
+        for (row in chessBoard.indices) {
+            for (col in chessBoard.indices) {
+                val piece = sampleChess.board.getPiece(Coordinate2D(col, 7-row))
+                val isBlack = (piece?.player ?: sampleChess.players[0]) != sampleChess.players[0]
+                val charSmall = piece
+                    ?.getSymbol()
+                    ?.toCharArray()?.get(0) ?: ' '
+                chessBoard[row][col].value = if (isBlack) {
+                    charSmall.lowercaseChar()
+                } else {
+                    charSmall
+                }
             }
         }
     }
