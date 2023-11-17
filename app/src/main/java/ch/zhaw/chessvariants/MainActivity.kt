@@ -28,6 +28,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,14 +39,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ChessVariantsTheme {
-                GameScene()
+                Start()
             }
         }
     }
 }
 
 @Composable
-fun GameScene(game: ChessViewModel = viewModel()) {
+fun Start() {
+
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "StartMenuScene") {
+        composable("StartMenuScene") { StartMenuScene(navController = navController) }
+        composable("GameScene") { GameScene(navController = navController) }
+    }
+}
+
+@Composable
+fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -64,12 +79,12 @@ fun GameScene(game: ChessViewModel = viewModel()) {
         }
 
         // Draw Control-Tools
-        ControlButtons()
+        ControlButtons(navController = navController)
     }
 }
 
 @Composable
-private fun ControlButtons(iconSize: Dp = 40.dp){
+private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,7 +97,7 @@ private fun ControlButtons(iconSize: Dp = 40.dp){
             modifier = Modifier
                 .size(iconSize)
                 .clickable {
-
+                    navController.navigate("StartMenuScene")
                 }
         )
         Spacer(Modifier.weight(1f))
