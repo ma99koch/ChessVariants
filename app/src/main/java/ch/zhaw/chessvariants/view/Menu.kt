@@ -1,4 +1,4 @@
-package ch.zhaw.chessvariants
+package ch.zhaw.chessvariants.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +15,12 @@ fun StartMenuScene (navController : NavController) {
 
         Spacer(modifier = Modifier.weight(3f))
 
-        Button(onClick = { navController.navigate("GameScene") }) {
-            Text(text = "Play")
+        Button(onClick = { navController.navigate("StandardChessGameScene") }) {
+            Text(text = "Play Standard Chess")
+        }
+
+        Button(onClick = { navController.navigate("Chess960GameScene") }) {
+            Text(text = "Play Chess 960")
         }
 
         Spacer(Modifier.weight(1f))

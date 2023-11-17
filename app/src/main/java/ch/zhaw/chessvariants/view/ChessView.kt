@@ -1,4 +1,4 @@
-package ch.zhaw.chessvariants
+package ch.zhaw.chessvariants.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -32,9 +31,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ch.zhaw.chessvariants.viewmodel.Chess960ViewModel
+import ch.zhaw.chessvariants.viewmodel.ChessViewModel
+import ch.zhaw.chessvariants.R
+import ch.zhaw.chessvariants.viewmodel.StandardChessViewModel
 import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
 
-class MainActivity : ComponentActivity() {
+class ChessView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,7 +55,8 @@ fun Start() {
 
     NavHost(navController = navController, startDestination = "StartMenuScene") {
         composable("StartMenuScene") { StartMenuScene(navController = navController) }
-        composable("GameScene") { GameScene(navController = navController) }
+        composable("StandardChessGameScene") { GameScene(game = StandardChessViewModel(), navController = navController) }
+        composable("Chess960GameScene") { GameScene(game = Chess960ViewModel(), navController = navController) }
     }
 }
 

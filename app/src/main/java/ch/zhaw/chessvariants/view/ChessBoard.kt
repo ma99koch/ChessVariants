@@ -1,4 +1,4 @@
-package ch.zhaw.chessvariants
+package ch.zhaw.chessvariants.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import ch.zhaw.chessvariants.viewmodel.ChessViewModel
+import ch.zhaw.chessvariants.R
 
 @Composable
 fun ChessBoard(game: ChessViewModel = viewModel(), modifier: Modifier = Modifier) {
@@ -57,14 +59,15 @@ private fun ChessField(
     Box(
         modifier
             .clickable {
-                if (game.isOwnPiece(row, col)) {
-                    game.toggleCandidate(row, col)
-                    return@clickable
-                }
                 if (game.hasCandidate() && allowedToMoveTo) {
                     game.moveCandidateTo(row, col)
+                    return@clickable
                 }
-                game.clearCandidate()
+                if (game.isOwnPiece(row, col)) {
+                    game.toggleCandidate(row, col)
+                } else {
+                    game.clearCandidate()
+                }
             }
             .background(fieldColor)
             .aspectRatio(1f)

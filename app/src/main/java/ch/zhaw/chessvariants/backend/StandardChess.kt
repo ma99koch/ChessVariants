@@ -1,4 +1,4 @@
-package ch.zhaw.chessvariants
+package ch.zhaw.chessvariants.backend
 
 import boards.Board2D
 import gameTypes.chess.AbstractChess2D
@@ -6,7 +6,7 @@ import rules.Enpassant
 import rules.StandardCastling
 import utils.FenUtility
 
-class SampleChess : AbstractChess2D(
+class StandardChess : AbstractChess2D(
     listOf(Enpassant(), StandardCastling()),
     listOf()
 ) {

@@ -1,17 +1,16 @@
-package ch.zhaw.chessvariants
+package ch.zhaw.chessvariants.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import coordinates.Coordinate2D
-import utils.FenUtility
+import gameTypes.chess.AbstractChess2D
 
-class ChessViewModel : ViewModel() {
+abstract class ChessViewModel : ViewModel() {
     enum class Player {
         WHITE, BLACK
     }
 
-    private var sampleChess: SampleChess
+    lateinit var chess: AbstractChess2D
 
     val chessBoard = Array(8) { Array(8) { mutableStateOf(' ') } }
     val allowedToMoveTo = Array(8) { Array(8) { mutableStateOf(false) } }
@@ -23,12 +22,6 @@ class ChessViewModel : ViewModel() {
      * Position of (-1,-1) means, no candidate is set
      * */
     private var candidate = mutableStateOf(intArrayOf(-1, -1))
-
-    init {
-        sampleChess = SampleChess()
-        sampleChess.initGame()
-        updateStateFromBackend()
-    }
 
     fun hasCandidate(): Boolean {
         return candidate.value[0] != -1 && candidate.value[1] != -1
@@ -58,7 +51,7 @@ class ChessViewModel : ViewModel() {
 
     fun moveCandidateTo(row: Int, col: Int) {
         if (hasCandidate() && !isCandidate(row, col)) {
-            val moves = sampleChess.getValidMoves()
+            val moves = chess.getValidMoves()
             val validMoves = moves
                 .filter { move -> Coordinate2D(candidate.value[1], candidate.value[0]).equals(move.displayFrom) }
                 .filter { move -> Coordinate2D(col, row).equals(move.displayTo) }
@@ -66,7 +59,7 @@ class ChessViewModel : ViewModel() {
                 clearCandidate()
                 return
             }
-            sampleChess.playerMakeMove(validMoves[0])
+            chess.playerMakeMove(validMoves[0])
             updateStateFromBackend()
         }
     }
@@ -82,17 +75,17 @@ class ChessViewModel : ViewModel() {
     }
 
     fun undoMove() {
-        sampleChess.undoMove()
-        sampleChess.prevPlayer()
+        chess.undoMove()
+        chess.prevPlayer()
         updateStateFromBackend()
     }
 
     private fun updateBoardFromBackend () {
         for (row in chessBoard.indices) {
             for (col in chessBoard.indices) {
-                val piece = sampleChess.board.getPiece(Coordinate2D(col, row))
+                val piece = chess.board.getPiece(Coordinate2D(col, row))
 
-                val isBlack = (piece?.player ?: sampleChess.players[0]) != sampleChess.players[0]
+                val isBlack = (piece?.player ?: chess.players[0]) != chess.players[0]
                 val charSmall = piece
                     ?.getSymbol()
                     ?.toCharArray()?.get(0) ?: ' '
@@ -105,14 +98,14 @@ class ChessViewModel : ViewModel() {
         }
     }
 
-    private fun updateStateFromBackend () {
+    protected fun updateStateFromBackend () {
         updateBoardFromBackend()
         updatePlayer()
         clearCandidate()
     }
 
     private fun updatePlayer() {
-        currentPlayer.value = if (sampleChess.getCurrentPlayer() == sampleChess.players[0]) {
+        currentPlayer.value = if (chess.getCurrentPlayer() == chess.players[0]) {
             Player.WHITE
         } else {
             Player.BLACK
@@ -121,7 +114,7 @@ class ChessViewModel : ViewModel() {
 
     private fun setPossibleMoves(row: Int, col: Int) {
 
-        val moves = sampleChess.getValidMoves()
+        val moves = chess.getValidMoves()
         val validMoves = moves
             .filter { move -> Coordinate2D(col, row).equals(move.displayFrom) }
             .map { move -> move.displayTo }
