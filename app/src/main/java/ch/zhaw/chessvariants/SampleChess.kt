@@ -2,16 +2,20 @@ package ch.zhaw.chessvariants
 
 import boards.Board2D
 import gameTypes.chess.AbstractChess2D
+import rules.Enpassant
+import rules.StandardCastling
 import utils.FenUtility
 
-class SampleChess() : AbstractChess2D(
+class SampleChess : AbstractChess2D(
+    listOf(Enpassant(), StandardCastling()),
+    listOf()
 ) {
 
-    private var fenString = "rbbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKB1R"
+    private val fenString = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
-    private fun createFen(fen: String): FenUtility {
+    private fun createFen(): FenUtility {
         return FenUtility(
-            fen,
+            fenString,
             whiteStartingRow = 1,
             whitePromotionRow = 7,
             blackStartingRow = 6,
@@ -29,14 +33,9 @@ class SampleChess() : AbstractChess2D(
         initGame()
     }
 
-    fun initGame(fen: String) {
-        fenString = fen
-        initGame()
-    }
-
     override fun initGame() {
         val playerWhite = players[0]
         val playerBlack = players[1]
-        createFen(fenString).initBoardWithFEN(board, playerWhite, playerBlack)
+        createFen().initBoardWithFEN(board, playerWhite, playerBlack)
     }
 }

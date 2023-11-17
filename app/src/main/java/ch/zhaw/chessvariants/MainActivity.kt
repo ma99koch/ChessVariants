@@ -79,12 +79,12 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         }
 
         // Draw Control-Tools
-        ControlButtons(navController = navController)
+        ControlButtons(navController = navController, game = game)
     }
 }
 
 @Composable
-private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController){
+private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController, game: ChessViewModel){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,7 +119,7 @@ private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController){
             modifier = Modifier
                 .size(iconSize)
                 .clickable {
-
+                    game.undoMove()
                 }
         )
         Spacer(Modifier.weight(1f))
