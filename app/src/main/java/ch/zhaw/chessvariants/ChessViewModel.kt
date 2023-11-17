@@ -1,0 +1,186 @@
+package ch.zhaw.chessvariants
+
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+import coordinates.Coordinate2D
+
+class ChessViewModel : ViewModel() {
+    enum class Player {
+        WHITE, BLACK
+    }
+
+    val chessBoard = Array(8) { Array(8) { mutableStateOf(' ') } }
+    val allowedToMoveTo = Array(8) { Array(8) { mutableStateOf(false) } }
+    var currentPlayer = mutableStateOf(Player.WHITE)
+
+    val FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+
+    /**
+     * If a piece is selected -> It is candidate
+     * Position of (-1,-1) means, no candidate is set
+     * */
+    private var candidate = mutableStateOf(intArrayOf(-1, -1))
+
+    init {
+//        SampleChess().initGame()
+        initializeBoard()
+    }
+
+    private fun initializeBoard() {
+        /*        val sb = StringBuilder()
+                for (char in FEN) {
+                    if(char == ' '){
+                        break
+                    }
+                    if(char == '/'){
+                        continue
+                    }
+                    if (char.isDigit()) {
+                        for (i in 0 until char.digitToInt()) {
+                            sb.append(' ')
+                        }
+                        continue
+                    }
+                    sb.append(char)
+                }
+        Log.d("ChessLog", "Following is the String: $sb")
+        for (row in chessBoard.indices){
+            for (col in chessBoard.indices){
+                chessBoard[row][col].value = sb[row * chessBoard.size + col]
+            }
+        }
+*/
+        val sampleChess = SampleChess()
+        sampleChess.initGame()
+        for (row in chessBoard.indices) {
+            for (col in chessBoard.indices) {
+                val piece = sampleChess.board.getPiece(Coordinate2D(col, 7-row))
+                val isBlack = (piece?.player ?: sampleChess.players[0]) != sampleChess.players[0]
+                val charSmall = piece
+                    ?.getSymbol()
+                    ?.toCharArray()?.get(0) ?: ' '
+                chessBoard[row][col].value = if (isBlack) {
+                    charSmall.lowercaseChar()
+                } else {
+                    charSmall
+                }
+            }
+        }
+    }
+
+    fun hasCandidate(): Boolean {
+        return candidate.value[0] != -1 && candidate.value[1] != -1
+    }
+
+    fun isCandidate(row: Int, col: Int): Boolean {
+        return candidate.value.contentEquals(intArrayOf(row, col))
+    }
+
+    fun toggleCandidate(row: Int, col: Int) {
+        if (candidate.value.contentEquals(intArrayOf(row, col))){
+            clearCandidate()
+        } else {
+            this.candidate.value = intArrayOf(row, col)
+            setPossibleMoves(row, col)
+        }
+    }
+
+    private fun clearCandidate() {
+        this.candidate.value = intArrayOf(-1, -1)
+        for (values in allowedToMoveTo) {
+            for (value in values) {
+                value.value = false;
+            }
+        }
+    }
+
+    fun moveCandidateTo(row: Int, col: Int) {
+        if (hasCandidate() && !isCandidate(row, col)) {
+            chessBoard[row][col].value = chessBoard[candidate.value[0]][candidate.value[1]].value
+            chessBoard[candidate.value[0]][candidate.value[1]].value = ' '
+            clearCandidate()
+            nextPlayer()
+        }
+    }
+
+    fun isOwnPiece(row: Int, col: Int): Boolean {
+        var isOwn = false
+        val blackPieces = setOf('k', 'q', 'r', 'n', 'b', 'p')
+        val whitePieces = setOf('K', 'Q', 'R', 'N', 'B', 'P')
+        return if (currentPlayer.value == Player.BLACK) {
+            blackPieces.contains(chessBoard[row][col].value)
+        } else {
+            whitePieces.contains(chessBoard[row][col].value)
+        }
+    }
+
+    private fun nextPlayer() {
+        currentPlayer.value = if (currentPlayer.value == Player.WHITE) {
+            Player.BLACK
+        } else {
+            Player.WHITE
+        }
+    }
+
+    private fun setPossibleMoves(row: Int, col: Int) {
+        val allowedMoves = getPossibleMoves(row, col)
+        if (allowedMoves != null) {
+            for (i in allowedMoves.indices) {
+                for (j in allowedMoves.indices) {
+                    allowedToMoveTo[i][j].value = allowedMoves[i][j]
+                }
+            }
+        } else {
+            for (i in chessBoard.indices) {
+                for (j in chessBoard.indices) {
+                    allowedToMoveTo[i][j].value = false
+                }
+            }
+        }
+    }
+
+    private fun getPossibleMoves(row: Int, col: Int): Array<Array<Boolean>>? {
+        return when (chessBoard[row][col].value) {
+            'r', 'R' -> getRookMoves(row, col)
+            'b', 'B' -> getBishopMoves(row, col)
+            else -> null
+        }
+    }
+
+    /**
+     * Dummy implementation, to be done by backend
+     */
+    private fun getRookMoves(row: Int, col: Int): Array<Array<Boolean>> {
+        val allowedMoves = Array(8) { Array(8) { false } }
+        for (i in allowedToMoveTo.indices) {
+            for (j in allowedToMoveTo.indices) {
+                if ((i == row && j == col)) {
+                    continue
+                }
+                if ((i == row || j == col)) {
+                    allowedMoves[i][j] = true
+                }
+            }
+        }
+        return allowedMoves
+    }
+
+    /**
+     * Dummy implementation, to be done by backend
+     */
+    private fun getBishopMoves(row: Int, col: Int): Array<Array<Boolean>> {
+        val allowedMoves = Array(8) { Array(8) { false } }
+        for (i in allowedToMoveTo.indices) {
+            for (j in allowedToMoveTo.indices) {
+                if ((i == row && j == col)) {
+                    continue
+                }
+                if (i - j == row - col || i + j == col + row) {
+                    allowedMoves[i][j] = true
+                }
+            }
+        }
+        return allowedMoves
+    }
+}
