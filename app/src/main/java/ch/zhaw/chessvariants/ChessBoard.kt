@@ -24,7 +24,7 @@ fun ChessBoard(game: ChessViewModel = viewModel(), modifier: Modifier = Modifier
             .aspectRatio(1f)
     ) {
         Column {
-            for (row in 0 until size) {
+            for (row in size - 1 downTo 0) {
                 Row {
                     for (col in 0 until size) {
                         ChessField(row, col, game, modifier = Modifier.weight(1f))
@@ -64,6 +64,7 @@ private fun ChessField(
                 if (game.hasCandidate() && allowedToMoveTo) {
                     game.moveCandidateTo(row, col)
                 }
+                game.clearCandidate()
             }
             .background(fieldColor)
             .aspectRatio(1f)

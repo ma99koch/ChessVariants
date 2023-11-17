@@ -6,15 +6,18 @@ import utils.FenUtility
 
 class SampleChess() : AbstractChess2D(
 ) {
-    private val fen = FenUtility(
-        "r1bqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1",
+
+    private var fenString = "rbbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKB1R"
+
+    private var fen = FenUtility(
+        fenString,
         whiteStartingRow = 0,
         whitePromotionRow = 7,
         blackStartingRow = 7,
         blackPromotionRow = 0
     )
 
-    private val b = Board2D(8,8)
+    private val b = Board2D(8, 8)
     override val board: Board2D
         get() = b
     override val name: String
@@ -24,9 +27,20 @@ class SampleChess() : AbstractChess2D(
         initGame()
     }
 
+    fun initGame(fen: String) {
+       this.fen = FenUtility(
+            fen,
+            whiteStartingRow = 0,
+            whitePromotionRow = 7,
+            blackStartingRow = 7,
+            blackPromotionRow = 0
+        )
+        initGame()
+    }
+
     override fun initGame() {
-        val player1 = players[0]
-        val player2 = players[1]
-        fen.initBoardWithFEN(board, player1, player2)
+        val playerWhite = players[0]
+        val playerBlack = players[1]
+        fen.initBoardWithFEN(board, playerWhite, playerBlack)
     }
 }
