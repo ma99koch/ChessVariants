@@ -9,13 +9,15 @@ class SampleChess() : AbstractChess2D(
 
     private var fenString = "rbbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKB1R"
 
-    private var fen = FenUtility(
-        fenString,
-        whiteStartingRow = 0,
-        whitePromotionRow = 7,
-        blackStartingRow = 7,
-        blackPromotionRow = 0
-    )
+    private fun createFen(fen: String): FenUtility {
+        return FenUtility(
+            fen,
+            whiteStartingRow = 1,
+            whitePromotionRow = 7,
+            blackStartingRow = 6,
+            blackPromotionRow = 0
+        )
+    }
 
     private val b = Board2D(8, 8)
     override val board: Board2D
@@ -28,19 +30,13 @@ class SampleChess() : AbstractChess2D(
     }
 
     fun initGame(fen: String) {
-       this.fen = FenUtility(
-            fen,
-            whiteStartingRow = 0,
-            whitePromotionRow = 7,
-            blackStartingRow = 7,
-            blackPromotionRow = 0
-        )
+        fenString = fen
         initGame()
     }
 
     override fun initGame() {
         val playerWhite = players[0]
         val playerBlack = players[1]
-        fen.initBoardWithFEN(board, playerWhite, playerBlack)
+        createFen(fenString).initBoardWithFEN(board, playerWhite, playerBlack)
     }
 }
