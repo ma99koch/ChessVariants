@@ -44,7 +44,7 @@ abstract class ChessViewModel : ViewModel() {
         this.candidate.value = intArrayOf(-1, -1)
         for (values in allowedToMoveTo) {
             for (value in values) {
-                value.value = false;
+                value.value = false
             }
         }
     }
@@ -75,8 +75,11 @@ abstract class ChessViewModel : ViewModel() {
     }
 
     fun undoMove() {
+        val prevBoard = chess.board.getBoardState()
         chess.undoMove()
-        chess.prevPlayer()
+        if(chess.board.getBoardState() != prevBoard){
+            chess.prevPlayer()
+        }
         updateStateFromBackend()
     }
 
