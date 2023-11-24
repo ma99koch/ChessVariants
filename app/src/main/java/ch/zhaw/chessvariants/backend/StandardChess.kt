@@ -1,6 +1,7 @@
 package ch.zhaw.chessvariants.backend
 
 import boards.Board2D
+import endconditions.StandardEndConditions
 import gameTypes.chess.AbstractChess2D
 import rules.Enpassant
 import rules.StandardCastling
@@ -8,7 +9,7 @@ import utils.FenUtility
 
 class StandardChess : AbstractChess2D(
     listOf(Enpassant(), StandardCastling()),
-    listOf()
+    listOf(StandardEndConditions())
 ) {
 
     private val fenString = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"

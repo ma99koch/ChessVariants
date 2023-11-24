@@ -1,7 +1,7 @@
 package ch.zhaw.chessvariants.view
 
-import android.R
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +48,9 @@ fun StartMenuScene (navController : NavController) {
             Button(onClick = { navController.navigate("PlayMenuScene") },
                 colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
                 shape = RectangleShape,
-                modifier = Modifier.fillMaxWidth(0.8f).height(80.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(80.dp)
             ) {
                 Text(text = "PLAY", fontSize = 30.sp)
             }
@@ -58,17 +60,28 @@ fun StartMenuScene (navController : NavController) {
             Button(onClick = { showDialog = true },
                 colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
                 shape = RectangleShape,
-                modifier = Modifier.fillMaxWidth(0.8f).height(40.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(40.dp)
             ) {
                 Text(text = "Settings", fontSize = 15.sp)
             }
 
             Spacer(Modifier.weight(3f))
 
-            Button(onClick = { /*TODO*/ },
+            Button(
+                onClick = {
+                    try {
+                        activity?.finishAndRemoveTask()
+                    } catch (e: Exception) {
+                        Log.i("Chess", "Failed to end application")
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
                 shape = RectangleShape,
-                modifier = Modifier.fillMaxWidth(0.6f).height(60.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(60.dp)
             ) {
                 Text(text = "QUIT", fontSize = 20.sp)
             }

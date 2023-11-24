@@ -59,6 +59,9 @@ private fun ChessField(
     Box(
         modifier
             .clickable {
+                if (game.gameState.value != ChessViewModel.GameState.ONGOING) {
+                    return@clickable
+                }
                 if (game.hasCandidate() && allowedToMoveTo) {
                     game.moveCandidateTo(row, col)
                     return@clickable

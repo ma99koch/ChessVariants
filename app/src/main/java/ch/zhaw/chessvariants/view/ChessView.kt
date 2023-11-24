@@ -68,7 +68,7 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = "${if(game.currentPlayer.value == ChessViewModel.Player.WHITE) "White" else {"Black"}} to Move",
+        Text(text = getGameText(game),
             textAlign = TextAlign.Center,
             fontSize = 30.sp)
 
@@ -139,5 +139,21 @@ private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController, g
                 }
         )
         Spacer(Modifier.weight(1f))
+    }
+}
+
+private fun getGameText(game: ChessViewModel): String {
+    return when(game.gameState.value) {
+        ChessViewModel.GameState.WHITE, ChessViewModel.GameState.BLACK -> {
+            "${game.gameState.value.state} won"
+        }
+
+        ChessViewModel.GameState.DRAW -> {
+            "Game is draw"
+        }
+
+        ChessViewModel.GameState.ONGOING -> {
+            "${if(game.currentPlayer.value == ChessViewModel.Player.WHITE) "White" else {"Black"}} to move"
+        }
     }
 }
