@@ -57,6 +57,7 @@ fun Start() {
         composable("StartMenuScene") { StartMenuScene(navController = navController) }
         composable("StandardChessGameScene") { GameScene(game = StandardChessViewModel(), navController = navController) }
         composable("Chess960GameScene") { GameScene(game = Chess960ViewModel(), navController = navController) }
+        composable("PlayMenuScene") { PlayMenuScene(navController = navController) }
     }
 }
 
