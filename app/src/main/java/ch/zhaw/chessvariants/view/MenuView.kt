@@ -12,10 +12,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +28,7 @@ import androidx.navigation.NavController
 @Composable
 fun StartMenuScene (navController : NavController) {
 
-    var showDialog by remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
 
     Row {
         Spacer(Modifier.weight(1f))
@@ -57,7 +56,7 @@ fun StartMenuScene (navController : NavController) {
 
             Spacer(Modifier.weight(0.5f))
 
-            Button(onClick = { showDialog = true },
+            Button(onClick = { showDialog.value = true },
                 colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
                 shape = RectangleShape,
                 modifier = Modifier
@@ -93,17 +92,21 @@ fun StartMenuScene (navController : NavController) {
         Spacer(Modifier.weight(1f))
     }
 
-    if (showDialog) {
+    ShowDialog(showDialog = showDialog, "Settings", "Die Settings folgen in der kommenden Version.")
+}
+
+@Composable
+fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
+    if (showDialog.value) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(text = "Settings") },
-            text = { Text("Die Settings folgen in der kommenden Version.") },
+            onDismissRequest = { showDialog.value = false },
+            title = { Text(title) },
+            text = { Text(text) },
             confirmButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(onClick = { showDialog.value = false }) {
                     Text("OK")
                 }
             }
         )
     }
-
 }

@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +24,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun PlayMenuScene (navController : NavController) {
-    var showDialog by remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
 
     Row {
         Spacer(Modifier.weight(1f))
@@ -74,7 +71,7 @@ fun PlayMenuScene (navController : NavController) {
 
                 Spacer(Modifier.weight(0.5f))
 
-                Button(onClick = { showDialog = true },
+                Button(onClick = { showDialog.value = true },
                     colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
                     shape = RectangleShape,
                     modifier = Modifier
@@ -94,16 +91,6 @@ fun PlayMenuScene (navController : NavController) {
         Spacer(Modifier.weight(1f))
     }
 
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(text = "Nachricht aus Entenhausen.") },
-            text = { Text("Die Ente ist noch in Entenhausen.") },
-            confirmButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
+    ShowDialog(showDialog = showDialog, "Nachricht aus Entenhausen.", "Die Ente ist noch in Entenhausen.")
+
 }

@@ -19,6 +19,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,11 +34,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ch.zhaw.chessvariants.R
+import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
 import ch.zhaw.chessvariants.viewmodel.Chess960ViewModel
 import ch.zhaw.chessvariants.viewmodel.ChessViewModel
-import ch.zhaw.chessvariants.R
 import ch.zhaw.chessvariants.viewmodel.StandardChessViewModel
-import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
 
 class ChessView : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,22 +58,38 @@ fun Start() {
 
     NavHost(navController = navController, startDestination = "StartMenuScene") {
         composable("StartMenuScene") { StartMenuScene(navController = navController) }
-        composable("StandardChessGameScene") { GameScene(game = StandardChessViewModel(), navController = navController) }
-        composable("Chess960GameScene") { GameScene(game = Chess960ViewModel(), navController = navController) }
+        composable("StandardChessGameScene") {
+            GameScene(
+                game = StandardChessViewModel(),
+                navController = navController
+            )
+        }
+        composable("Chess960GameScene") {
+            GameScene(
+                game = Chess960ViewModel(),
+                navController = navController
+            )
+        }
         composable("PlayMenuScene") { PlayMenuScene(navController = navController) }
     }
 }
 
 @Composable
 fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) {
+
+    val showGameEndedDialog = remember { mutableStateOf(false) }
+    val showSettingDialog = remember { mutableStateOf(false) }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = getGameText(game),
+        Text(
+            text = getGameText(game),
             textAlign = TextAlign.Center,
-            fontSize = 30.sp)
+            fontSize = 30.sp
+        )
 
         // Draw ChessBoard
         Row(
@@ -84,12 +103,33 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         }
 
         // Draw Control-Tools
-        ControlButtons(navController = navController, game = game)
+        ControlButtons(navController = navController, game = game, showDialog = showSettingDialog)
     }
+
+    if (game.gameState.value != ChessViewModel.GameState.ONGOING) {
+        showGameEndedDialog.value = true
+    }
+    ShowDialog(
+        showDialog = showGameEndedDialog,
+        title = getGameText(game),
+        text = "The game is over. Thanks for playing!"
+    )
+
+    ShowDialog(
+        showDialog = showSettingDialog,
+        title = "Settings",
+        text = "No settings to set"
+    )
+
 }
 
 @Composable
-private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController, game: ChessViewModel){
+private fun ControlButtons(
+    iconSize: Dp = 40.dp,
+    navController: NavController,
+    game: ChessViewModel,
+    showDialog: MutableState<Boolean>
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,18 +149,25 @@ private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController, g
 
         Image(
             painterResource(id = R.drawable.baseline_outlined_flag_24),
-            contentDescription = "Go to Home",
+            contentDescription = "Give up",
             modifier = Modifier
                 .size(iconSize)
                 .clickable {
-
+                    if (game.gameState.value != ChessViewModel.GameState.ONGOING) {
+                        return@clickable
+                    }
+                    if (game.currentPlayer.value == ChessViewModel.Player.WHITE) {
+                        game.gameState.value = ChessViewModel.GameState.BLACK
+                    } else {
+                        game.gameState.value = ChessViewModel.GameState.WHITE
+                    }
                 }
         )
         Spacer(Modifier.weight(1f))
 
         Icon(
             imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Go to Home",
+            contentDescription = "Undo Move",
             modifier = Modifier
                 .size(iconSize)
                 .clickable {
@@ -131,11 +178,11 @@ private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController, g
 
         Icon(
             imageVector = Icons.Default.Settings,
-            contentDescription = "Go to Home",
+            contentDescription = "Go to Setting",
             modifier = Modifier
                 .size(iconSize)
                 .clickable {
-
+                    showDialog.value = true
                 }
         )
         Spacer(Modifier.weight(1f))
@@ -143,7 +190,7 @@ private fun ControlButtons(iconSize: Dp = 40.dp, navController: NavController, g
 }
 
 private fun getGameText(game: ChessViewModel): String {
-    return when(game.gameState.value) {
+    return when (game.gameState.value) {
         ChessViewModel.GameState.WHITE, ChessViewModel.GameState.BLACK -> {
             "${game.gameState.value.state} won"
         }
@@ -153,7 +200,11 @@ private fun getGameText(game: ChessViewModel): String {
         }
 
         ChessViewModel.GameState.ONGOING -> {
-            "${if(game.currentPlayer.value == ChessViewModel.Player.WHITE) "White" else {"Black"}} to move"
+            "${
+                if (game.currentPlayer.value == ChessViewModel.Player.WHITE) "White" else {
+                    "Black"
+                }
+            } to move"
         }
     }
 }
