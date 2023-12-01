@@ -18,12 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun PlayMenuScene (navController : NavController) {
+fun PlayMenuScene(navController: NavController) {
     val showDialog = remember { mutableStateOf(false) }
 
     Row {
@@ -34,54 +35,58 @@ fun PlayMenuScene (navController : NavController) {
         ) {
             Spacer(Modifier.weight(2f))
 
-            Text(text = "CHESS\r\n\r\nVariants", fontSize = 40.sp, fontWeight = FontWeight.Medium)
+            Text(
+                text = "Variants\n\nTo Play",
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
 
             Spacer(Modifier.weight(3f))
 
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .background(color = Color.Gray)
+            DefaultButton(
+                onClick = { navController.navigate("StandardChessGameScene") },
+                buttonModifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .fillMaxHeight(0.8f)
-            ) {
-                Spacer(Modifier.weight(4f))
+                    .height(80.dp),
+                buttonText = "Standard Chess",
+                textSize = 25.sp
+            )
 
-                DefaultButton(
-                    onClick = { navController.navigate("StandardChessGameScene") },
-                    buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
-                    buttonText = "Standard Chess",
-                    textSize = 25.sp
-                )
+            Spacer(Modifier.weight(1.5f))
 
-                Spacer(Modifier.weight(0.5f))
+            DefaultButton(
+                onClick = { navController.navigate("Chess960GameScene") },
+                buttonModifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(80.dp),
+                buttonText = "Chess960",
+                textSize = 25.sp
+            )
 
-                DefaultButton(
-                    onClick = { navController.navigate("Chess960GameScene") },
-                    buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
-                    buttonText = "Chess960",
-                    textSize = 25.sp
-                )
+            Spacer(Modifier.weight(1.5f))
 
-                Spacer(Modifier.weight(0.5f))
-
-                DefaultButton(
-                    onClick = { showDialog.value = true },
-                    buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
-                    buttonText = "🦆 Duck Chess",
-                    textSize = 25.sp
-                )
-
-                Spacer(Modifier.weight(4f))
-            }
+            DefaultButton(
+                onClick = { showDialog.value = true },
+                buttonModifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(80.dp),
+                buttonText = "🦆 Duck Chess",
+                textSize = 25.sp
+            )
 
             Spacer(Modifier.weight(4f))
+
 
         }
 
         Spacer(Modifier.weight(1f))
     }
 
-    ShowDialog(showDialog = showDialog, "Nachricht aus Entenhausen.", "Die Ente ist noch in Entenhausen.")
+    ShowDialog(
+        showDialog = showDialog,
+        "Nachricht aus Entenhausen.",
+        "Die Ente ist noch in Entenhausen."
+    )
 
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +43,7 @@ fun StartMenuScene (navController : NavController) {
 
             Spacer(Modifier.weight(2f))
 
-            Text(text = "CHESS\r\n\r\nVariants", fontSize = 40.sp, fontWeight = FontWeight.Medium)
+            Text(text = "CHESS\r\n\r\nVariants", fontSize = 40.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
 
             Spacer(Modifier.weight(3f))
 
@@ -52,16 +54,16 @@ fun StartMenuScene (navController : NavController) {
                 textSize = 30.sp
             )
 
-            Spacer(Modifier.weight(0.5f))
+            Spacer(Modifier.weight(3f))
 
             DefaultButton(
                 onClick = { showDialog.value = true },
-                buttonModifier = Modifier.fillMaxWidth(0.8f).height(40.dp),
+                buttonModifier = Modifier.fillMaxWidth(0.8f).height(60.dp),
                 buttonText = "SETTINGS",
-                textSize = 15.sp
+                textSize = 20.sp
             )
 
-            Spacer(Modifier.weight(3f))
+            Spacer(Modifier.weight(0.5f))
 
             DefaultButton(
                 onClick = {
@@ -71,7 +73,7 @@ fun StartMenuScene (navController : NavController) {
                         Log.i("Chess", "Failed to end application")
                     }
                 },
-                buttonModifier = Modifier.fillMaxWidth(0.6f).height(60.dp),
+                buttonModifier = Modifier.fillMaxWidth(0.8f).height(60.dp),
                 buttonText = "QUIT",
                 textSize = 20.sp
             )
@@ -97,7 +99,7 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
                 DefaultButton(
                     onClick = { showDialog.value = false },
                     buttonText = "OK",
-                    textSize = 20.sp
+                    textSize = 12.sp
                 )
             }
         )
@@ -109,7 +111,7 @@ fun DefaultButton(onClick: () -> Unit, buttonModifier : Modifier = Modifier, but
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-        shape = RectangleShape,
+        shape = RoundedCornerShape(20),
         modifier = buttonModifier
     ) {
         Text(text = buttonText, fontSize = textSize)
