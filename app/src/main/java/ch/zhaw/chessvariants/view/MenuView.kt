@@ -47,7 +47,9 @@ fun StartMenuScene (navController : NavController) {
 
             MenuButton(
                 clickFunction = { navController.navigate("PlayMenuScene") },
-                buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
+                buttonModifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(80.dp),
                 buttonText = "PLAY",
                 textSize = 30.sp
             )
@@ -56,7 +58,9 @@ fun StartMenuScene (navController : NavController) {
 
             MenuButton(
                 clickFunction = { showDialog.value = true },
-                buttonModifier = Modifier.fillMaxWidth(0.8f).height(40.dp),
+                buttonModifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(40.dp),
                 buttonText = "SETTINGS",
                 textSize = 15.sp
             )
@@ -71,7 +75,9 @@ fun StartMenuScene (navController : NavController) {
                         Log.i("Chess", "Failed to end application")
                     }
                 },
-                buttonModifier = Modifier.fillMaxWidth(0.6f).height(60.dp),
+                buttonModifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(60.dp),
                 buttonText = "QUIT",
                 textSize = 20.sp
             )
@@ -94,9 +100,12 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
             title = { Text(title) },
             text = { Text(text) },
             confirmButton = {
-                Button(onClick = { showDialog.value = false }) {
-                    Text("OK")
-                }
+                MenuButton(
+                    clickFunction = { showDialog.value = false },
+                    buttonModifier = Modifier,
+                    buttonText = "OK",
+                    textSize = 20.sp
+                )
             }
         )
     }
