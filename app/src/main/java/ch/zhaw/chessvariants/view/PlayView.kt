@@ -47,39 +47,30 @@ fun PlayMenuScene (navController : NavController) {
             ) {
                 Spacer(Modifier.weight(4f))
 
-                Button(onClick = { navController.navigate("StandardChessGameScene") },
-                    colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-                    shape = RectangleShape,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(80.dp)
-                ) {
-                    Text(text = "Standard Chess", fontSize = 25.sp)
-                }
+                MenuButton(
+                    clickFunction = { navController.navigate("StandardChessGameScene") },
+                    buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
+                    buttonText = "Standard Chess",
+                    textSize = 25.sp
+                )
 
                 Spacer(Modifier.weight(0.5f))
 
-                Button(onClick = { navController.navigate("Chess960GameScene") },
-                    colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-                    shape = RectangleShape,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(80.dp)
-                ) {
-                    Text(text = "Chess960", fontSize = 25.sp)
-                }
+                MenuButton(
+                    clickFunction = { navController.navigate("Chess960GameScene") },
+                    buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
+                    buttonText = "Chess960",
+                    textSize = 25.sp
+                )
 
                 Spacer(Modifier.weight(0.5f))
 
-                Button(onClick = { showDialog.value = true },
-                    colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-                    shape = RectangleShape,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(80.dp)
-                ) {
-                    Text(text = "🦆 Duck Chess", fontSize = 25.sp)
-                }
+                MenuButton(
+                    clickFunction = { showDialog.value = true },
+                    buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
+                    buttonText = "🦆 Duck Chess",
+                    textSize = 25.sp
+                )
 
                 Spacer(Modifier.weight(4f))
             }

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -44,46 +45,36 @@ fun StartMenuScene (navController : NavController) {
 
             Spacer(Modifier.weight(3f))
 
-            Button(onClick = { navController.navigate("PlayMenuScene") },
-                colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-                shape = RectangleShape,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(80.dp)
-            ) {
-                Text(text = "PLAY", fontSize = 30.sp)
-            }
+            MenuButton(
+                clickFunction = { navController.navigate("PlayMenuScene") },
+                buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
+                buttonText = "PLAY",
+                textSize = 30.sp
+            )
 
             Spacer(Modifier.weight(0.5f))
 
-            Button(onClick = { showDialog.value = true },
-                colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-                shape = RectangleShape,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(40.dp)
-            ) {
-                Text(text = "Settings", fontSize = 15.sp)
-            }
+            MenuButton(
+                clickFunction = { showDialog.value = true },
+                buttonModifier = Modifier.fillMaxWidth(0.8f).height(40.dp),
+                buttonText = "SETTINGS",
+                textSize = 15.sp
+            )
 
             Spacer(Modifier.weight(3f))
 
-            Button(
-                onClick = {
+            MenuButton(
+                clickFunction = {
                     try {
                         activity?.finishAndRemoveTask()
                     } catch (e: Exception) {
                         Log.i("Chess", "Failed to end application")
                     }
                 },
-                colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
-                shape = RectangleShape,
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .height(60.dp)
-            ) {
-                Text(text = "QUIT", fontSize = 20.sp)
-            }
+                buttonModifier = Modifier.fillMaxWidth(0.6f).height(60.dp),
+                buttonText = "QUIT",
+                textSize = 20.sp
+            )
 
             Spacer(Modifier.weight(4f))
 
@@ -108,5 +99,17 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
                 }
             }
         )
+    }
+}
+
+@Composable
+fun MenuButton(clickFunction: () -> Unit, buttonModifier : Modifier, buttonText: String, textSize: TextUnit) {
+    Button(
+        onClick = clickFunction,
+        colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
+        shape = RectangleShape,
+        modifier = buttonModifier
+    ) {
+        Text(text = buttonText, fontSize = textSize)
     }
 }
