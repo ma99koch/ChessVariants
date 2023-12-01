@@ -1,6 +1,7 @@
 package ch.zhaw.chessvariants.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -55,22 +56,30 @@ class ChessView : ComponentActivity() {
 fun Start() {
 
     val navController = rememberNavController()
+    var standardChessViewModel: StandardChessViewModel? = null
+    var chess960ViewModel: Chess960ViewModel? = null
 
     NavHost(navController = navController, startDestination = "StartMenuScene") {
         composable("StartMenuScene") { StartMenuScene(navController = navController) }
         composable("StandardChessGameScene") {
+            standardChessViewModel = standardChessViewModel ?: StandardChessViewModel()
             GameScene(
-                game = StandardChessViewModel(),
+                game = standardChessViewModel!!,
                 navController = navController
             )
         }
         composable("Chess960GameScene") {
+            chess960ViewModel = chess960ViewModel ?: Chess960ViewModel()
             GameScene(
-                game = Chess960ViewModel(),
+                game = chess960ViewModel!!,
                 navController = navController
             )
         }
-        composable("PlayMenuScene") { PlayMenuScene(navController = navController) }
+        composable("PlayMenuScene") {
+            PlayMenuScene(navController = navController)
+            standardChessViewModel = null
+            chess960ViewModel = null
+        }
     }
 }
 
