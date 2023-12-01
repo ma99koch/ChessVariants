@@ -47,8 +47,8 @@ fun PlayMenuScene (navController : NavController) {
             ) {
                 Spacer(Modifier.weight(4f))
 
-                MenuButton(
-                    clickFunction = { navController.navigate("StandardChessGameScene") },
+                DefaultButton(
+                    onClick = { navController.navigate("StandardChessGameScene") },
                     buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
                     buttonText = "Standard Chess",
                     textSize = 25.sp
@@ -56,8 +56,8 @@ fun PlayMenuScene (navController : NavController) {
 
                 Spacer(Modifier.weight(0.5f))
 
-                MenuButton(
-                    clickFunction = { navController.navigate("Chess960GameScene") },
+                DefaultButton(
+                    onClick = { navController.navigate("Chess960GameScene") },
                     buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
                     buttonText = "Chess960",
                     textSize = 25.sp
@@ -65,8 +65,8 @@ fun PlayMenuScene (navController : NavController) {
 
                 Spacer(Modifier.weight(0.5f))
 
-                MenuButton(
-                    clickFunction = { showDialog.value = true },
+                DefaultButton(
+                    onClick = { showDialog.value = true },
                     buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
                     buttonText = "🦆 Duck Chess",
                     textSize = 25.sp

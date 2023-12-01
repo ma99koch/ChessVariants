@@ -45,39 +45,33 @@ fun StartMenuScene (navController : NavController) {
 
             Spacer(Modifier.weight(3f))
 
-            MenuButton(
-                clickFunction = { navController.navigate("PlayMenuScene") },
-                buttonModifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(80.dp),
+            DefaultButton(
+                onClick = { navController.navigate("PlayMenuScene") },
+                buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
                 buttonText = "PLAY",
                 textSize = 30.sp
             )
 
             Spacer(Modifier.weight(0.5f))
 
-            MenuButton(
-                clickFunction = { showDialog.value = true },
-                buttonModifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(40.dp),
+            DefaultButton(
+                onClick = { showDialog.value = true },
+                buttonModifier = Modifier.fillMaxWidth(0.8f).height(40.dp),
                 buttonText = "SETTINGS",
                 textSize = 15.sp
             )
 
             Spacer(Modifier.weight(3f))
 
-            MenuButton(
-                clickFunction = {
+            DefaultButton(
+                onClick = {
                     try {
                         activity?.finishAndRemoveTask()
                     } catch (e: Exception) {
                         Log.i("Chess", "Failed to end application")
                     }
                 },
-                buttonModifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .height(60.dp),
+                buttonModifier = Modifier.fillMaxWidth(0.6f).height(60.dp),
                 buttonText = "QUIT",
                 textSize = 20.sp
             )
@@ -100,9 +94,8 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
             title = { Text(title) },
             text = { Text(text) },
             confirmButton = {
-                MenuButton(
-                    clickFunction = { showDialog.value = false },
-                    buttonModifier = Modifier,
+                DefaultButton(
+                    onClick = { showDialog.value = false },
                     buttonText = "OK",
                     textSize = 20.sp
                 )
@@ -112,9 +105,9 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
 }
 
 @Composable
-fun MenuButton(clickFunction: () -> Unit, buttonModifier : Modifier, buttonText: String, textSize: TextUnit) {
+fun DefaultButton(onClick: () -> Unit, buttonModifier : Modifier = Modifier, buttonText: String, textSize: TextUnit) {
     Button(
-        onClick = clickFunction,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
         shape = RectangleShape,
         modifier = buttonModifier
