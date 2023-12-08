@@ -1,7 +1,10 @@
 package ch.zhaw.chessvariants.view
 
 import android.app.Activity
+import android.os.Bundle
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +29,54 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
+import ch.zhaw.chessvariants.viewmodel.Chess960ViewModel
+import ch.zhaw.chessvariants.viewmodel.StandardChessViewModel
+
+class MenuView : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ChessVariantsTheme {
+                Start()
+            }
+        }
+    }
+}
+
+@Composable
+fun Start() {
+
+    val navController = rememberNavController()
+    var standardChessViewModel: StandardChessViewModel? = null
+    var chess960ViewModel: Chess960ViewModel? = null
+
+    NavHost(navController = navController, startDestination = "StartMenuScene") {
+        composable("StartMenuScene") { StartMenuScene(navController = navController) }
+        composable("StandardChessGameScene") {
+            standardChessViewModel = standardChessViewModel ?: StandardChessViewModel("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+            GameScene(
+                game = standardChessViewModel!!,
+                navController = navController
+            )
+        }
+        composable("Chess960GameScene") {
+            chess960ViewModel = chess960ViewModel ?: Chess960ViewModel()
+            GameScene(
+                game = chess960ViewModel!!,
+                navController = navController
+            )
+        }
+        composable("PlayMenuScene") {
+            PlayMenuScene(navController = navController)
+            standardChessViewModel = null
+            chess960ViewModel = null
+        }
+    }
+}
 
 @Composable
 fun StartMenuScene (navController : NavController) {

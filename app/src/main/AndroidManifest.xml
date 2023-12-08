@@ -13,9 +13,8 @@
         android:theme="@style/Theme.ChessVariants"
         tools:targetApi="31">
         <activity
-            android:name=".view.ChessView"
+            android:name=".view.MenuView"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.ChessVariants">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
