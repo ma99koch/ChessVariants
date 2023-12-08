@@ -1,28 +1,41 @@
 package ch.zhaw.chessvariants.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,9 +74,13 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
 
         // Draw Control-Tools
         ControlButtons(navController = navController, game = game, showSettingDialog = showSettingDialog)
-
+        
+        Spacer(Modifier.weight(1f))
+        
         // Draw FEN-State
         FenField(game)
+        
+        Spacer(Modifier.weight(2f))
 
     }
 
@@ -152,7 +169,50 @@ private fun ControlButtons(
 
 @Composable
 private fun FenField(game: ChessViewModel) {
-    Text(text = game.fenString.value)
+    // Context for the clipboard manager
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Spacer(Modifier.weight(0.5f))
+
+            Box (
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .width(400.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(), // Fill the width of the Box
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = {
+                        // Copy text to clipboard
+                        clipboardManager.setText(AnnotatedString(game.fenString.value))
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_content_copy_24),
+                            contentDescription = "Copy FEN"
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(20.dp))
+
+                    Text(
+                        text = game.fenString.value,
+                        fontSize = 12.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
+                    )
+                }
+            }
+
+            Spacer(Modifier.weight(0.5f))
+        }
 }
 
 private fun getGameText(game: ChessViewModel): String {
