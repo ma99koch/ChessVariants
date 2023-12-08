@@ -182,12 +182,12 @@ private fun FenField(game: ChessViewModel) {
             Box (
                 modifier = Modifier
                     .background(Color.LightGray)
-                    .width(400.dp)
+                    .fillMaxWidth() // Change to .width(350.dp) if a white border is required
             ) {
                 Row(
                     modifier = Modifier
                         .padding(8.dp)
-                        .fillMaxWidth(), // Fill the width of the Box
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = {
