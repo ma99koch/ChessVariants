@@ -1,12 +1,11 @@
 package ch.zhaw.chessvariants.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import coordinates.Coordinate2D
-import endconditions.Checkmate
 import endconditions.Outcome
 import gameTypes.chess.AbstractChess2D
+import java.lang.StringBuilder
 
 abstract class ChessViewModel : ViewModel() {
     enum class Player {
@@ -26,6 +25,7 @@ abstract class ChessViewModel : ViewModel() {
     val allowedToMoveTo = Array(8) { Array(8) { mutableStateOf(false) } }
     var currentPlayer = mutableStateOf(Player.WHITE)
     var gameState = mutableStateOf(GameState.ONGOING)
+    var fenString = mutableStateOf("")
 
 
     /**
@@ -122,6 +122,7 @@ abstract class ChessViewModel : ViewModel() {
     protected fun updateStateFromBackend() {
         updateBoardFromBackend()
         clearCandidate()
+        updateFen()
 
         if (chess.isOver()) {
             if (chess.getOutcome() is Outcome.Win) {
@@ -134,6 +135,36 @@ abstract class ChessViewModel : ViewModel() {
         }
 
         updatePlayer()
+    }
+
+    private fun updateFen() {
+        fenString.value = generateFen()
+    }
+
+    private fun generateFen(): String {
+        val fenBuilder = StringBuilder()
+        for (row in chessBoard.indices.reversed()) {
+            var emptySpaces = 0
+            for (field in chessBoard[row].indices) {
+                val piece = chessBoard[row][field].value
+                if (piece == ' ') {
+                    emptySpaces++
+                } else {
+                    if (emptySpaces != 0){
+                        fenBuilder.append(emptySpaces)
+                        emptySpaces = 0
+                    }
+                    fenBuilder.append(piece)
+                }
+            }
+            if (emptySpaces != 0){
+                fenBuilder.append(emptySpaces)
+            }
+            if(row != 0) {
+                fenBuilder.append("/")
+            }
+        }
+        return fenBuilder.toString()
     }
 
     private fun updatePlayer() {

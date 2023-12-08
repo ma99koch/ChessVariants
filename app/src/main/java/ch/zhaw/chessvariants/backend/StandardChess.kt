@@ -7,12 +7,10 @@ import rules.Enpassant
 import rules.StandardCastling
 import utils.FenUtility
 
-class StandardChess : AbstractChess2D(
+class StandardChess constructor(private val fenString: String) : AbstractChess2D(
     listOf(Enpassant(), StandardCastling()),
     listOf(StandardEndConditions())
 ) {
-
-    private val fenString = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
     private fun createFen(): FenUtility {
         return FenUtility(

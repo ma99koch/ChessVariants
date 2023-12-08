@@ -1,7 +1,6 @@
 package ch.zhaw.chessvariants.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +62,7 @@ fun Start() {
     NavHost(navController = navController, startDestination = "StartMenuScene") {
         composable("StartMenuScene") { StartMenuScene(navController = navController) }
         composable("StandardChessGameScene") {
-            standardChessViewModel = standardChessViewModel ?: StandardChessViewModel()
+            standardChessViewModel = standardChessViewModel ?: StandardChessViewModel("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
             GameScene(
                 game = standardChessViewModel!!,
                 navController = navController
@@ -112,9 +112,14 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         }
 
         // Draw Control-Tools
-        ControlButtons(navController = navController, game = game, showDialog = showSettingDialog)
+        ControlButtons(navController = navController, game = game, showSettingDialog = showSettingDialog)
+
+        // Draw FEN-State
+        FenField(game)
+
     }
 
+    // Draw Pop-Ups
     if (game.gameState.value != ChessViewModel.GameState.ONGOING) {
         showGameEndedDialog.value = true
     }
@@ -123,7 +128,6 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         title = getGameText(game),
         text = "The game is over. Thanks for playing!"
     )
-
     ShowDialog(
         showDialog = showSettingDialog,
         title = "Settings",
@@ -137,7 +141,7 @@ private fun ControlButtons(
     iconSize: Dp = 40.dp,
     navController: NavController,
     game: ChessViewModel,
-    showDialog: MutableState<Boolean>
+    showSettingDialog: MutableState<Boolean>
 ) {
     Row(
         modifier = Modifier
@@ -191,11 +195,16 @@ private fun ControlButtons(
             modifier = Modifier
                 .size(iconSize)
                 .clickable {
-                    showDialog.value = true
+                    showSettingDialog.value = true
                 }
         )
         Spacer(Modifier.weight(1f))
     }
+}
+
+@Composable
+private fun FenField(game: ChessViewModel) {
+    Text(text = game.fenString.value)
 }
 
 private fun getGameText(game: ChessViewModel): String {

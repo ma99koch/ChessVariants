@@ -2,11 +2,11 @@ package ch.zhaw.chessvariants.viewmodel
 
 import ch.zhaw.chessvariants.backend.StandardChess
 
-class StandardChessViewModel : ChessViewModel() {
+class StandardChessViewModel(private val fen: String) : ChessViewModel() {
 
     init {
-        chess = StandardChess()
-        chess.initGame()
+        chess = StandardChess(fen)
+        chess.initBoard()
         updateStateFromBackend()
     }
 
