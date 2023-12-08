@@ -13,20 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -78,8 +73,9 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         Spacer(Modifier.weight(1f))
         
         // Draw FEN-State
+
         FenField(game)
-        
+
         Spacer(Modifier.weight(2f))
 
     }
@@ -172,47 +168,44 @@ private fun FenField(game: ChessViewModel) {
     // Context for the clipboard manager
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
 
-        Row (
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+    Row (
+        modifier = Modifier.fillMaxWidth(0.95f),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Spacer(Modifier.weight(0.5f))
+
+        Box (
+            modifier = Modifier
+                .background(Color.LightGray)
+                .fillMaxWidth() // Change to .width(350.dp) if a white border is required
         ) {
-
-            Spacer(Modifier.weight(0.5f))
-
-            Box (
+            Row(
                 modifier = Modifier
-                    .background(Color.LightGray)
-                    .fillMaxWidth() // Change to .width(350.dp) if a white border is required
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = {
-                        // Copy text to clipboard
-                        clipboardManager.setText(AnnotatedString(game.fenString.value))
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_content_copy_24),
-                            contentDescription = "Copy FEN"
-                        )
-                    }
 
-                    Spacer(modifier = Modifier.width(20.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_content_copy_24),
+                    contentDescription = "Copy FEN",
+                    Modifier.clickable { clipboardManager.setText(AnnotatedString(game.fenString.value)) }
+                )
 
-                    Text(
-                        text = game.fenString.value,
-                        fontSize = 12.sp,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 2
-                    )
-                }
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Text(
+                    text = game.fenString.value,
+                    fontSize = 12.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
+                )
             }
-
-            Spacer(Modifier.weight(0.5f))
         }
+
+        Spacer(Modifier.weight(0.5f))
+    }
 }
 
 private fun getGameText(game: ChessViewModel): String {

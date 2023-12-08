@@ -3,10 +3,10 @@ package ch.zhaw.chessvariants.view
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,9 +29,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ch.zhaw.chessvariants.ui.theme.ChessVariantsTheme
 import ch.zhaw.chessvariants.viewmodel.Chess960ViewModel
 import ch.zhaw.chessvariants.viewmodel.StandardChessViewModel
@@ -56,8 +58,21 @@ fun Start() {
 
     NavHost(navController = navController, startDestination = "StartMenuScene") {
         composable("StartMenuScene") { StartMenuScene(navController = navController) }
-        composable("StandardChessGameScene") {
-            standardChessViewModel = standardChessViewModel ?: StandardChessViewModel("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+        composable(
+            "StandardChessGameScene/{fen}",
+            arguments = listOf( navArgument("fen") {NavType.StringType})
+            ) {
+            var fenString = it.arguments?.getString("fen") ?: StandardChessViewModel.DEFAULT_FEN
+            fenString = fenString.replace('-', '/')
+
+            standardChessViewModel = try {
+                standardChessViewModel ?: StandardChessViewModel(fenString)
+            } catch (e: Exception) {
+                Toast
+                    .makeText(LocalContext.current, "Failed to parse FEN. Using default.", Toast.LENGTH_LONG)
+                    .show()
+                StandardChessViewModel(StandardChessViewModel.DEFAULT_FEN)
+            }
             GameScene(
                 game = standardChessViewModel!!,
                 navController = navController
@@ -83,56 +98,57 @@ fun StartMenuScene (navController : NavController) {
 
     val showDialog = remember { mutableStateOf(false) }
 
-    Row {
-        Spacer(Modifier.weight(1f))
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        val activity = (LocalContext.current as? Activity)
 
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val activity = (LocalContext.current as? Activity)
+        Spacer(Modifier.weight(2f))
 
-            Spacer(Modifier.weight(2f))
+        Text(text = "CHESS\r\n\r\nVariants", fontSize = 40.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
 
-            Text(text = "CHESS\r\n\r\nVariants", fontSize = 40.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+        Spacer(Modifier.weight(3f))
 
-            Spacer(Modifier.weight(3f))
+        DefaultButton(
+            onClick = { navController.navigate("PlayMenuScene") },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(80.dp),
+            buttonText = "PLAY",
+            textSize = 30.sp
+        )
 
-            DefaultButton(
-                onClick = { navController.navigate("PlayMenuScene") },
-                buttonModifier = Modifier.fillMaxWidth(0.8f).height(80.dp),
-                buttonText = "PLAY",
-                textSize = 30.sp
-            )
+        Spacer(Modifier.weight(3f))
 
-            Spacer(Modifier.weight(3f))
+        DefaultButton(
+            onClick = { showDialog.value = true },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(60.dp),
+            buttonText = "SETTINGS",
+            textSize = 20.sp
+        )
 
-            DefaultButton(
-                onClick = { showDialog.value = true },
-                buttonModifier = Modifier.fillMaxWidth(0.8f).height(60.dp),
-                buttonText = "SETTINGS",
-                textSize = 20.sp
-            )
+        Spacer(Modifier.weight(0.5f))
 
-            Spacer(Modifier.weight(0.5f))
+        DefaultButton(
+            onClick = {
+                try {
+                    activity?.finishAndRemoveTask()
+                } catch (e: Exception) {
+                    Log.i("Chess", "Failed to end application")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(60.dp),
+            buttonText = "QUIT",
+            textSize = 20.sp
+        )
 
-            DefaultButton(
-                onClick = {
-                    try {
-                        activity?.finishAndRemoveTask()
-                    } catch (e: Exception) {
-                        Log.i("Chess", "Failed to end application")
-                    }
-                },
-                buttonModifier = Modifier.fillMaxWidth(0.8f).height(60.dp),
-                buttonText = "QUIT",
-                textSize = 20.sp
-            )
+        Spacer(Modifier.weight(4f))
 
-            Spacer(Modifier.weight(4f))
-
-        }
-
-        Spacer(Modifier.weight(1f))
     }
 
     ShowDialog(showDialog = showDialog, "Settings", "Die Settings folgen in der kommenden Version.")
@@ -157,12 +173,12 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
 }
 
 @Composable
-fun DefaultButton(onClick: () -> Unit, buttonModifier : Modifier = Modifier, buttonText: String, textSize: TextUnit) {
+fun DefaultButton(onClick: () -> Unit, modifier : Modifier = Modifier, buttonText: String, textSize: TextUnit) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(contentColor = Color.White, containerColor = Color.Black),
         shape = RoundedCornerShape(20),
-        modifier = buttonModifier
+        modifier = modifier
     ) {
         Text(text = buttonText, fontSize = textSize)
     }
