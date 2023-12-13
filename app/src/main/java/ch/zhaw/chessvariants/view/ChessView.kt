@@ -1,5 +1,6 @@
 package ch.zhaw.chessvariants.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -88,12 +90,12 @@ fun GameScene(game: ChessViewModel = viewModel(), navController: NavController) 
         showDialog = showGameEndedDialog,
         title = getGameText(game),
         text = "The game is over. Thanks for playing!"
-    )
+    ){}
     ShowDialog(
         showDialog = showSettingDialog,
         title = "Settings",
         text = "No settings to set"
-    )
+    ){}
 
 }
 
@@ -167,6 +169,7 @@ private fun ControlButtons(
 private fun FenField(game: ChessViewModel) {
     // Context for the clipboard manager
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    val localContext = LocalContext.current
 
     Row (
         modifier = Modifier.fillMaxWidth(0.95f),
@@ -190,7 +193,12 @@ private fun FenField(game: ChessViewModel) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_content_copy_24),
                     contentDescription = "Copy FEN",
-                    Modifier.clickable { clipboardManager.setText(AnnotatedString(game.fenString.value)) }
+                    Modifier.clickable {
+                        clipboardManager.setText(AnnotatedString(game.fenString.value))
+                        Toast
+                            .makeText(localContext, "Copied FEN to Clipboard.", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 )
 
                 Spacer(modifier = Modifier.width(20.dp))

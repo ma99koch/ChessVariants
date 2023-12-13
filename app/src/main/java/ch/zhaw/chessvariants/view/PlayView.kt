@@ -62,8 +62,6 @@ fun PlayMenuScene(navController: NavController) {
             textSize = 25.sp
         )
 
-        FenInput(fen)
-
         Spacer(Modifier.weight(1.5f))
 
         DefaultButton(
@@ -93,8 +91,15 @@ fun PlayMenuScene(navController: NavController) {
     ShowDialog(
         showDialog = showDialog,
         "Nachricht aus Entenhausen.",
-        "Die Ente ist noch in Entenhausen."
-    )
+        "Die Ente ist noch in Entenhausen.",
+        composable = { FenInput(fen) }
+    ) {
+        if (fen.value != "") {
+            var fenString = fen.value
+            fenString = fenString.replace('/', '-')
+            navController.navigate("StandardChessGameScene/${fenString}")
+        }
+    }
 
 }
 
@@ -106,7 +111,7 @@ private fun FenInput(fen: MutableState<String>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .fillMaxWidth(0.7f)
+            .fillMaxWidth()
             .background(Color.LightGray)
     ) {
         TextField(
@@ -140,6 +145,6 @@ private fun FenInput(fen: MutableState<String>) {
             showDialog = showInfo,
             title = "What is FEN?",
             text = "FEN (Forsyth-Edwards Notation) is a standardized alphanumeric notation used to represent the complete state of a chess game."
-        )
+        ){}
     }
 }

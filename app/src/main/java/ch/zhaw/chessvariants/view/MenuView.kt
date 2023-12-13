@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -151,19 +152,31 @@ fun StartMenuScene (navController : NavController) {
 
     }
 
-    ShowDialog(showDialog = showDialog, "Settings", "Die Settings folgen in der kommenden Version.")
+    ShowDialog(showDialog = showDialog, "Settings", "Die Settings folgen in der kommenden Version.") {}
 }
 
 @Composable
-fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String) {
+fun ShowDialog(showDialog: MutableState<Boolean>, title: String, text: String, composable: @Composable (() -> Unit)? = null, runnable: () -> Unit) {
     if (showDialog.value) {
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
             title = { Text(title) },
-            text = { Text(text) },
+            text = {
+                Column {
+                    Text(text)
+                    if (composable != null) {
+                        Text("\nYou can start a new Game from FEN here, though!",
+                            modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 0.dp))
+                        composable()
+                    }
+                }
+            },
             confirmButton = {
                 DefaultButton(
-                    onClick = { showDialog.value = false },
+                    onClick = {
+                        showDialog.value = false
+                        runnable()
+                    },
                     buttonText = "OK",
                     textSize = 12.sp
                 )

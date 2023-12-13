@@ -46,7 +46,7 @@ private fun ChessField(
 ) {
     val colorLight = Color(0xFF888888)
     val colorDark = Color(0xFF555555)
-    val fieldColor: Color = if ((row + col) % 2 == 0) colorLight else colorDark
+    val fieldColor: Color = if ((row + col) % 2 == 1) colorLight else colorDark
     val allowedToMoveTo: Boolean = game.allowedToMoveTo[row][col].value
     val borderColor = if (game.isCandidate(row, col)) {
         Color.Blue
